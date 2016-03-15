@@ -3,6 +3,7 @@ envhandlebars
 
 [![Dependency Status](https://david-dm.org/cgmartin/envhandlebars.svg)](https://david-dm.org/cgmartin/envhandlebars)
 [![npm version](https://badge.fury.io/js/envhandlebars.svg)](http://badge.fury.io/js/envhandlebars)
+[![Build Status](https://travis-ci.org/cgmartin/envhandlebars.svg?branch=master)](https://travis-ci.org/cgmartin/envhandlebars)
 
 A simple templating utility, akin to [`envsubst`](http://linuxcommand.org/man_pages/envsubst1.html), but using [Handlebars](http://handlebarsjs.com/) for more complex logic.
 
