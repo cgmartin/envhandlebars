@@ -1,2 +1,15 @@
 #!/usr/bin/env node
-require('../index.js');
+var bin = require('../index.js');
+
+bin({
+    env: process.env,
+    stdin:  process.stdin,
+    stdout: process.stdout,
+    stderr: process.stderr,
+    argv: process.argv
+}, function(err) {
+    if (err) {
+        console.error(err);
+        process.exit(1);
+    }
+});

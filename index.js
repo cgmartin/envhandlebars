@@ -1,16 +1,49 @@
 var concat = require('concat-stream');
 var Handlebars = require('handlebars');
+var util = require('util');
 
-process.stdin.on('error', handleError);
-process.stdin.pipe(concat(applyTemplate));
+module.exports = function bin(opts, cb) {
 
-function applyTemplate(buf) {
-    var template = buf.toString();
-    var compile = Handlebars.compile(template);
-    process.stdout.write(compile(process.env));
-}
+    opts.stdin.setEncoding('utf8');
+    opts.stdin.on('error', handleError);
+    opts.stdin.pipe(concat(applyTemplate));
 
-function handleError(err) {
-    console.error(err);
-    process.exit(1);
+    function applyTemplate(buf) {
+        var template = buf.toString();
+        var compile = Handlebars.compile(template);
+        opts.stdout.write(compile(getVars()));
+        cb && cb();
+    }
+
+    function handleError(err) {
+        opts.stderr.write(util.format.call(null, err));
+        cb && cb(err);
+    }
+
+    function getVars() {
+        var vars = {};
+        Object.keys(opts.env).forEach(function(key) {
+            var arrRegexp = /^(.*?)_(\d+)_?(.*?)$/g;
+            var match = arrRegexp.exec(key);
+            //console.log('match: ', match);
+            if (match) {
+                if (!vars[match[1]]) {
+                    vars[match[1]] = [];
+                }
+                if (match[3]) {
+                    // ['PEOPLE_0_FIRST', 'PEOPLE', '0', 'FIRST']
+                    if (!vars[match[1]][match[2]]) {
+                        vars[match[1]][match[2]] = {};
+                    }
+                    vars[match[1]][match[2]][match[3]] = opts.env[key];
+                } else {
+                    // ['PEOPLE_0', 'PEOPLE', '0', '']
+                    vars[match[1]][match[2]] = opts.env[key];
+                }
+            } else {
+                vars[key] = opts.env[key];
+            }
+        });
+        return vars;
+    }
 }

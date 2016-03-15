@@ -1,22 +1,25 @@
 {
   "name": "envhandlebars",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Simple handlebars templating for configuration files using environment variables",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --reporter dot"
   },
   "bin": {
     "envhandlebars": "./bin/envhandlebars"
   },
   "repository": {
-    "type" : "git",
-    "url" : "git+https://github.com/cgmartin/envhandlebars.git"
+    "type": "git",
+    "url": "git+https://github.com/cgmartin/envhandlebars.git"
   },
   "author": "Christopher Martin <cgmartin@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "concat-stream": "^1.5.1",
     "handlebars": "^4.0.5"
+  },
+  "devDependencies": {
+    "mocha": "^2.4.5"
   }
 }
