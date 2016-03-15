@@ -1,12 +1,10 @@
 envhandlebars
 =============
 
-A simple templating utility, akin to [`envsubst`](http://linuxcommand.org/man_pages/envsubst1.html), but using [Handlebars](http://handlebarsjs.com/) for more complex logic.
-
-Particularly useful for dynamic configuration in Docker containers.
-
 [![Dependency Status](https://david-dm.org/cgmartin/envhandlebars.svg)](https://david-dm.org/cgmartin/envhandlebars)
 [![npm version](https://badge.fury.io/js/envhandlebars.svg)](http://badge.fury.io/js/envhandlebars)
+
+A simple templating utility, akin to [`envsubst`](http://linuxcommand.org/man_pages/envsubst1.html), but using [Handlebars](http://handlebarsjs.com/) for more complex logic.
 
 Environment variables are used as the data input to a Handlebars template:
 ```
@@ -14,6 +12,8 @@ $ export WORLD=world
 $ echo "Hello {{WORLD}}" | envhandlebars
 Hello world
 ```
+
+This is particularly useful for dynamic configuration files in Docker containers and other [12-Factor applications](http://12factor.net/).
 
 ## Install
 
