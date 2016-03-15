@@ -18,7 +18,7 @@ $ npm install -g envhandlebars
 
 ```
 $ export WORLD=world
-$ echo "Hello {{WORLD}}" | envhandlebars
+$ echo "{{#if WORLD}}Hello {{WORLD}}{{/if}}" | envhandlebars
 Hello world
 ```
 
