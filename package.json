@@ -9,6 +9,10 @@
   "bin": {
     "envhandlebars": "./bin/envhandlebars"
   },
+  "repository": {
+    "type" : "git",
+    "url" : "git+https://github.com/cgmartin/envhandlebars.git"
+  }
   "author": "Christopher Martin <cgmartin@gmail.com>",
   "license": "MIT",
   "dependencies": {
