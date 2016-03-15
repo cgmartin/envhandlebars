@@ -98,6 +98,8 @@ Output:
 Chris Martin, John Papa, Shayne Boyer!
 ```
 
+See the [each block helper](http://handlebarsjs.com/builtin_helpers.html#iteration) for more information.
+
 ## Docker Usage
 
 To generate configuration dynamically within a docker container, `envhandlebars` can be used before the main process starts. It can be done in the `CMD` or within a wrapper script.
