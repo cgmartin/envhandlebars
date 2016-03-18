@@ -1,10 +1,10 @@
 {
   "name": "envhandlebars",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Simple handlebars templating for configuration files using environment variables",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --reporter dot"
+    "test": "eslint *.js test-helpers/*.js test/*.js && mocha --reporter dot"
   },
   "bin": {
     "envhandlebars": "./bin/envhandlebars"
@@ -20,6 +20,7 @@
     "handlebars": "^4.0.5"
   },
   "devDependencies": {
+    "eslint": "^2.4.0",
     "mocha": "^2.4.5"
   }
 }

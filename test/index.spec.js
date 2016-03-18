@@ -1,3 +1,5 @@
+/* global it, describe, beforeEach */
+'use strict';
 var assert = require('assert');
 var stream = require('../test-helpers/stream-mocks');
 var path = require('path');

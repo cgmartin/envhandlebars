@@ -1,3 +1,4 @@
+'use strict';
 var concat = require('concat-stream');
 var Handlebars = require('handlebars');
 var util = require('util');

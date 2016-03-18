@@ -1,3 +1,4 @@
+'use strict';
 var stream = require('stream');
 var util = require('util');
 
@@ -19,7 +20,7 @@ function WritableStream (options) {
     stream.Writable.call(this, options);
 }
 
-WritableStream.prototype.write = function(chunk, encoding, callback) {
+WritableStream.prototype.write = function() {
     var ret = stream.Writable.prototype.write.apply(this, arguments);
     if (!ret) this.emit('drain');
     return ret;
