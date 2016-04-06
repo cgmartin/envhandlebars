@@ -104,5 +104,28 @@ describe('envhandlebars', function() {
                 done();
             });
         });
+        it('should render array of object arrays', function (done) {
+            var stdin = new stream.ReadableStream(
+                "{{#each CLUSTERS}}{{NAME}} > " +
+                    "{{#each SERVICES}}{{NAME}}{{#unless @last}},{{/unless}}{{/each}}" +
+                "{{#unless @last}}; {{/unless}}{{/each}}!"
+            );
+            fixture({
+                env: {
+                    CLUSTERS_0_NAME: 'c1',
+                    CLUSTERS_0_SERVICES_0_NAME: 'c1s1',
+                    CLUSTERS_0_SERVICES_1_NAME: 'c1s2',
+                    CLUSTERS_1_NAME: 'c2',
+                    CLUSTERS_1_SERVICES_0_NAME: 'c2s1',
+                    CLUSTERS_1_SERVICES_1_NAME: 'c2s2'
+                },
+                stdin: stdin, stdout: stdout, stderr: stderr,
+                argv: argv
+            }, function (err) {
+                assert.ifError(err);
+                assert.equal(stdout.toString(), 'c1 > c1s1,c1s2; c2 > c2s1,c2s2!');
+                done();
+            });
+        });
     });
 });
