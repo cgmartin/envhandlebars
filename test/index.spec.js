@@ -16,7 +16,7 @@ describe('envhandlebars', function() {
         argv = [
             'node',
             path.join(__dirname, "../bin/envhandlebars")
-        ]
+        ];
     });
 
     describe('basic expressions', function () {
@@ -128,4 +128,29 @@ describe('envhandlebars', function() {
             });
         });
     });
+
+    describe('handlebars extensions', function () {
+        it('should register helper', function (done) {
+            var stdin = new stream.ReadableStream(
+                "Hello {{fullName FIRST_NAME LAST_NAME}}"
+            );
+            function registerHelpers(Handlebars) {
+                Handlebars.registerHelper('fullName', function(first, last) {
+                    return last + ', ' + first;
+                });
+            }
+
+            fixture({
+                env: { FIRST_NAME: 'first', LAST_NAME: 'last' },
+                stdin: stdin, stdout: stdout, stderr: stderr,
+                argv: argv,
+                extendHandlebars: registerHelpers
+            }, function (err) {
+                assert.ifError(err);
+                assert.equal(stdout.toString(), 'Hello last, first');
+                done();
+            });
+        });
+    });
+
 });

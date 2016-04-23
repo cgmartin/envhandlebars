@@ -9,8 +9,8 @@ A simple templating utility, akin to [`envsubst`](http://linuxcommand.org/man_pa
 
 Environment variables are used as the data input to a Handlebars template:
 ```
-$ export WORLD=world
-$ echo "Hello {{WORLD}}" | envhandlebars
+$ export NAME=world
+$ echo "Hello {{NAME}}" | envhandlebars
 Hello world
 ```
 
@@ -50,7 +50,8 @@ Output:
 Hello world!
 ```
 
-See the [if block helper](http://handlebarsjs.com/builtin_helpers.html#conditionals) for more information.
+See the [if block helper](http://handlebarsjs.com/builtin_helpers.html#conditionals) docs page for more information.
+
 
 ### Iterators
 
@@ -99,7 +100,8 @@ Output:
 Chris Martin, John Papa, Shayne Boyer!
 ```
 
-See the [each block helper](http://handlebarsjs.com/builtin_helpers.html#iteration) for more information.
+See the [each block helper](http://handlebarsjs.com/builtin_helpers.html#iteration) docs page for more information.
+
 
 ## Docker Usage
 
@@ -135,6 +137,33 @@ For alpine-based images:
 ```
 RUN apk add --update nodejs && npm i -g envhandlebars
 ```
+
+## Custom Helpers or Partials
+
+**(New in v1.3.0+)**
+
+Custom Mustache helpers and partials can be implemented by extending the `envhandlebars` module with your own Node.js wrapper script:
+
+```javascript
+#!/usr/bin/env node
+// Script: `myenvhandlebars`
+'use strict';
+var envhandlebars = require('envhandlebars');
+
+// The Handlebars context is passed into this function
+// for registering helpers, partials or other extensions.
+function extendHandlebars(Handlebars) {
+    Handlebars.registerHelper('fullName', function(first, last) {
+        return last + ', ' + first;
+    });
+}
+
+envhandlebars({
+    extendHandlebars: extendHandlebars
+});
+```
+
+See the [custom helpers](http://handlebarsjs.com/#helpers) docs page for more information.
 
 ## License
 
