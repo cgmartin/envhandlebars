@@ -1,20 +1,9 @@
 #!/usr/bin/env node
 /* eslint no-process-env: 0, no-process-exit: 0, no-console: 0 */
 'use strict';
-var bin = require('../index.js');
+var envhandlebars = require('../index.js');
 
 // Provide a title to the process in `ps`
 process.title = 'envhandlebars';
 
-bin({
-    env: process.env,
-    stdin: process.stdin,
-    stdout: process.stdout,
-    stderr: process.stderr,
-    argv: process.argv
-}, function(err) {
-    if (err) {
-        console.error(err);
-        process.exit(1);
-    }
-});
+envhandlebars();

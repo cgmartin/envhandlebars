@@ -3,8 +3,33 @@ var concat = require('concat-stream');
 var Handlebars = require('handlebars');
 var util = require('util');
 
-module.exports = function bin(opts, cb) {
+module.exports = function envhandlebars(opts, cb) {
+    // Defaults
+    if (!cb && typeof opts === 'function') {
+        cb = opts;
+        opts = {};
+    }
+    opts = opts || {};
+    opts.env = opts.env || process.env;
+    opts.exit = opts.exit || process.exit;
+    opts.stdin = opts.stdin || process.stdin;
+    opts.stdout = opts.stdout || process.stdout;
+    opts.stderr = opts.stderr || process.stderr;
+    opts.argv = opts.argv || process.argv;
 
+    cb = cb || function(err) {
+        if (err) {
+            opts.stderr.write(util.format.call(null, err));
+            opts.exit(1);
+        }
+    };
+
+    // Allow helpers or other extensions to be applied
+    if (typeof opts.extendHandlebars === 'function') {
+        opts.extendHandlebars(Handlebars);
+    }
+
+    // Stream stdin through handlebars template procesing
     opts.stdin.setEncoding('utf8');
     opts.stdin.on('error', handleError);
     opts.stdin.pipe(concat(applyTemplate));
