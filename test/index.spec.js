@@ -68,6 +68,24 @@ describe('envhandlebars', function() {
     });
 
     describe('iterator expressions', function () {
+        it('should not render array of strings if --no_arrays is used', function (done) {
+            var stdin = new stream.ReadableStream(
+                "{{#each PEOPLE}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}!"
+            );
+            fixture({
+                env: {
+                    PEOPLE_0: 'Chris',
+                    PEOPLE_1: 'John',
+                    PEOPLE_2: 'Shayne'
+                },
+                stdin: stdin, stdout: stdout, stderr: stderr,
+                argv: argv.concat(['--no_arrays'])
+            }, function (err) {
+                assert.ifError(err);
+                assert.equal(stdout.toString(), '!');
+                done();
+            });
+        });
         it('should render array of strings', function (done) {
             var stdin = new stream.ReadableStream(
                 "{{#each PEOPLE}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}!"

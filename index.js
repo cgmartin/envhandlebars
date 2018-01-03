@@ -58,7 +58,7 @@ module.exports = function envhandlebars(opts, cb) {
         var arrRegexp = /^(.*?)_(\d+)_?(.*)$/g;
         var match = arrRegexp.exec(keypart);
 
-        if (match) {
+        if (match && opts.argv.indexOf('--no_arrays') === -1) {
             if (!vars[match[1]]) {
                 vars[match[1]] = [];
             }
