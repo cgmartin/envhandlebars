@@ -68,7 +68,7 @@ describe('envhandlebars', function() {
     });
 
     describe('iterator expressions', function () {
-        it('should not render array of strings', function (done) {
+        it('should not render array of strings if --no_arrays is used', function (done) {
             var stdin = new stream.ReadableStream(
                 "{{#each PEOPLE}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}!"
             );
