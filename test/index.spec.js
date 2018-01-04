@@ -86,6 +86,27 @@ describe('envhandlebars', function() {
                 done();
             });
         });
+        it('should only render one array of strings if --array_var_prefix is used', function (done) {
+            var stdin = new stream.ReadableStream(
+                "{{#each PEOPLE}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}!{{#each ARR_PEOPLE}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}!"
+            );
+            fixture({
+                env: {
+                    PEOPLE_0: 'Chris',
+                    PEOPLE_1: 'John',
+                    PEOPLE_2: 'Shayne',
+                    ARR_PEOPLE_0: 'Patrick',
+                    ARR_PEOPLE_1: 'Sean',
+                    ARR_PEOPLE_2: 'Liam'
+                },
+                stdin: stdin, stdout: stdout, stderr: stderr,
+                argv: argv.concat(['--array_var_prefix=ARR_'])
+            }, function (err) {
+                assert.ifError(err);
+                assert.equal(stdout.toString(), '!Patrick, Sean, Liam!');
+                done();
+            });
+        });
         it('should render array of strings', function (done) {
             var stdin = new stream.ReadableStream(
                 "{{#each PEOPLE}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}!"

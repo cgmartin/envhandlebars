@@ -25,6 +25,7 @@
     "template"
   ],
   "dependencies": {
+    "minimist": "^1.2.0",
     "concat-stream": "^1.6.0",
     "handlebars": "^4.0.6"
   },

@@ -16,6 +16,7 @@ module.exports = function envhandlebars(opts, cb) {
     opts.stdout = opts.stdout || process.stdout;
     opts.stderr = opts.stderr || process.stderr;
     opts.argv = opts.argv || process.argv;
+    opts.argv = require('minimist')(opts.argv.slice(2));
 
     cb = cb || function(err) {
         if (err) {
@@ -55,10 +56,15 @@ module.exports = function envhandlebars(opts, cb) {
     }
 
     function parseVar(vars, keypart, key) {
-        var arrRegexp = /^(.*?)_(\d+)_?(.*)$/g;
+        var arrPatternPrefix = '^(.*?)_';
+        if (opts.argv.array_var_prefix) {
+            arrPatternPrefix = '^(' + opts.argv.array_var_prefix + '.*?)_'
+        }
+        var arrPattern = '(\\d+)_?(.*)$';
+        var arrRegexp = new RegExp(arrPatternPrefix + arrPattern, 'g')
         var match = arrRegexp.exec(keypart);
 
-        if (match && opts.argv.indexOf('--no_arrays') === -1) {
+        if (match && !opts.argv.no_arrays) {
             if (!vars[match[1]]) {
                 vars[match[1]] = [];
             }
