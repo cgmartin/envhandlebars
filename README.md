@@ -101,7 +101,9 @@ Chris Martin, John Papa, Shayne Boyer!
 ```
 
 See the [each block helper](http://handlebarsjs.com/builtin_helpers.html#iteration) docs page for more information.
+
 You can disable this behaviour by passing the option `--no_arrays` to the `envhandlebars` command if you have env variables that conflict with this convention and you don't want to use iterators.
+Or you can use `--array_var_prefix=FOO_` to parse only variables that start with `FOO_`
 
 ## Docker Usage
 
