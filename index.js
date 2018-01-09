@@ -15,8 +15,8 @@ module.exports = function envhandlebars(opts, cb) {
     opts.stdin = opts.stdin || process.stdin;
     opts.stdout = opts.stdout || process.stdout;
     opts.stderr = opts.stderr || process.stderr;
-    opts.argv = opts.argv || process.argv;
-    opts.argv = require('minimist')(opts.argv.slice(2));
+    opts.arraysEnabled = typeof opts.arraysEnabled === 'undefined' ? true : opts.arraysEnabled;
+    opts.arrayVarPrefix = opts.arrayVarPrefix || false;
 
     cb = cb || function(err) {
         if (err) {
@@ -48,6 +48,9 @@ module.exports = function envhandlebars(opts, cb) {
     }
 
     function getVars() {
+        if (!opts.arraysEnabled) {
+            return opts.env;
+        }
         var vars = {};
         Object.keys(opts.env).forEach(function(key) {
             parseVar(vars, key, key);
@@ -57,14 +60,15 @@ module.exports = function envhandlebars(opts, cb) {
 
     function parseVar(vars, keypart, key) {
         var arrPatternPrefix = '^(.*?)_';
-        if (opts.argv.array_var_prefix) {
-            arrPatternPrefix = '^(' + opts.argv.array_var_prefix + '.*?)_'
+        if (keypart === key && opts.arrayVarPrefix) {
+            // recursive - only check prefix on first run
+            arrPatternPrefix = '^(' + opts.arrayVarPrefix + '.*?)_'
         }
         var arrPattern = '(\\d+)_?(.*)$';
         var arrRegexp = new RegExp(arrPatternPrefix + arrPattern, 'g')
         var match = arrRegexp.exec(keypart);
 
-        if (match && !opts.argv.no_arrays) {
+        if (match) {
             if (!vars[match[1]]) {
                 vars[match[1]] = [];
             }

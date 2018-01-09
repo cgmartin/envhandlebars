@@ -1,9 +1,34 @@
 #!/usr/bin/env node
-/* eslint no-process-env: 0, no-process-exit: 0, no-console: 0 */
+/* eslint no-process-env: 0, no-process-exit: 0, no-console: 0, no-multi-str: 0 */
 'use strict';
 var envhandlebars = require('../index.js');
+var minimist = require('minimist');
 
 // Provide a title to the process in `ps`
 process.title = 'envhandlebars';
 
-envhandlebars();
+// Process arguments
+var args = minimist(process.argv.slice(2), {
+    string: ['array-var-prefix'],
+    boolean: ['arrays', 'help'],
+    default: { arrays: true }
+});
+
+if (args.help) {
+    console.log(
+        'Usage:\n' +
+        '    envhandlebars [options] < templatefile > renderedfile\n' +
+        '\n' +
+        'Options:\n' +
+        '    --array-var-prefix="PRE_"  process arrays only for vars with the specified prefix [Default: all]\n' +
+        '    --no-arrays                disable variable name array processing\n' +
+        '    -h, --help                 print usage information\n'
+    );
+    process.exit(0);
+}
+
+// Run
+envhandlebars({
+    arraysEnabled: args.arrays,
+    arrayVarPrefix: args['array-var-prefix']
+});

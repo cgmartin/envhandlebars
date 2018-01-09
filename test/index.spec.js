@@ -68,9 +68,9 @@ describe('envhandlebars', function() {
     });
 
     describe('iterator expressions', function () {
-        it('should not render array of strings if --no_arrays is used', function (done) {
+        it('should not render array of strings if arraysEnabled is false', function (done) {
             var stdin = new stream.ReadableStream(
-                "{{#each PEOPLE}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}!"
+                "{{#each PEOPLE}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}{{PEOPLE_0}}!"
             );
             fixture({
                 env: {
@@ -79,14 +79,14 @@ describe('envhandlebars', function() {
                     PEOPLE_2: 'Shayne'
                 },
                 stdin: stdin, stdout: stdout, stderr: stderr,
-                argv: argv.concat(['--no_arrays'])
+                arraysEnabled: false
             }, function (err) {
                 assert.ifError(err);
-                assert.equal(stdout.toString(), '!');
+                assert.equal(stdout.toString(), 'Chris!');
                 done();
             });
         });
-        it('should only render one array of strings if --array_var_prefix is used', function (done) {
+        it('should only render one array of strings if arrayVarPrefix is used', function (done) {
             var stdin = new stream.ReadableStream(
                 "{{#each PEOPLE}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}!{{#each ARR_PEOPLE}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}!"
             );
@@ -100,7 +100,7 @@ describe('envhandlebars', function() {
                     ARR_PEOPLE_2: 'Liam'
                 },
                 stdin: stdin, stdout: stdout, stderr: stderr,
-                argv: argv.concat(['--array_var_prefix=ARR_'])
+                arrayVarPrefix: 'ARR_'
             }, function (err) {
                 assert.ifError(err);
                 assert.equal(stdout.toString(), '!Patrick, Sean, Liam!');
