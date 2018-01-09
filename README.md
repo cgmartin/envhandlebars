@@ -26,7 +26,13 @@ $ npm install -g envhandlebars
 
 Redirect a Mustache template file into stdin of `envhandlebars` and redirect the rendered stdout to a file:
 ```
-$ envhandlebars < templatefile > renderedfile
+Usage:
+    envhandlebars [options] < templatefile > renderedfile
+
+Options:
+    --array-var-prefix="PRE_"  process arrays only for vars with the specified prefix [Default: all]
+    --no-arrays                disable variable name array processing
+    -h, --help                 print usage information
 ```
 
 ## Complex Examples
@@ -102,8 +108,14 @@ Chris Martin, John Papa, Shayne Boyer!
 
 See the [each block helper](http://handlebarsjs.com/builtin_helpers.html#iteration) docs page for more information.
 
-You can disable this behaviour by passing the option `--no_arrays` to the `envhandlebars` command if you have env variables that conflict with this convention and you don't want to use iterators.
-Or you can use `--array_var_prefix=FOO_` to parse only variables that start with `FOO_`
+**NOTE:**
+
+Some environments may have variables that conflict with this convention.
+
+Use the `--array-var-prefix=FOO_` option to enable iterators only for variables that start with `FOO_`.
+
+Alternatively, iterator parsing can be completely disabled with the `--no-arrays` option.
+
 
 ## Docker Usage
 
