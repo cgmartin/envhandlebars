@@ -2,21 +2,15 @@
 'use strict';
 var assert = require('assert');
 var stream = require('../test-helpers/stream-mocks');
-var path = require('path');
 
 describe('envhandlebars', function() {
     var fixture = require('../index.js');
     var stdout;
     var stderr;
-    var argv;
 
     beforeEach(function() {
         stdout = new stream.WritableStream();
         stderr = new stream.WritableStream();
-        argv = [
-            'node',
-            path.join(__dirname, "../bin/envhandlebars")
-        ];
     });
 
     describe('basic expressions', function () {
@@ -26,8 +20,7 @@ describe('envhandlebars', function() {
             );
             fixture({
                 env: { WORLD: 'world', FIRST_NAME: 'first name' },
-                stdin: stdin, stdout: stdout, stderr: stderr,
-                argv: argv
+                stdin: stdin, stdout: stdout, stderr: stderr
             }, function (err) {
                 assert.ifError(err);
                 assert.equal(stdout.toString(), 'Hello world! first name');
@@ -43,22 +36,21 @@ describe('envhandlebars', function() {
             );
             fixture({
                 env: { WORLD: 'world' },
-                stdin: stdin, stdout: stdout, stderr: stderr,
-                argv: argv
+                stdin: stdin, stdout: stdout, stderr: stderr
             }, function (err) {
                 assert.ifError(err);
                 assert.equal(stdout.toString(), 'Hello world!');
                 done();
             });
         });
+
         it('should not render if var missing', function (done) {
             var stdin = new stream.ReadableStream(
                 "{{#if WORLD}}Hello {{WORLD}}{{/if}}!"
             );
             fixture({
                 env: { },
-                stdin: stdin, stdout: stdout, stderr: stderr,
-                argv: argv
+                stdin: stdin, stdout: stdout, stderr: stderr
             }, function (err) {
                 assert.ifError(err);
                 assert.equal(stdout.toString(), '!');
@@ -68,7 +60,7 @@ describe('envhandlebars', function() {
     });
 
     describe('iterator expressions', function () {
-        it('should not render array of strings if arraysEnabled is false', function (done) {
+        it('should not render arrays if disabled', function (done) {
             var stdin = new stream.ReadableStream(
                 "{{#each PEOPLE}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}{{PEOPLE_0}}!"
             );
@@ -86,9 +78,29 @@ describe('envhandlebars', function() {
                 done();
             });
         });
-        it('should only render one array of strings if arrayVarPrefix is used', function (done) {
+
+        it('should render array of strings', function (done) {
             var stdin = new stream.ReadableStream(
-                "{{#each PEOPLE}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}!{{#each ARR_PEOPLE}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}!"
+                "{{#each PEOPLE}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}!"
+            );
+            fixture({
+                env: {
+                    PEOPLE_0: 'Chris',
+                    PEOPLE_1: 'John',
+                    PEOPLE_2: 'Shayne'
+                },
+                stdin: stdin, stdout: stdout, stderr: stderr
+            }, function (err) {
+                assert.ifError(err);
+                assert.equal(stdout.toString(), 'Chris, John, Shayne!');
+                done();
+            });
+        });
+
+        it('should render array of strings with prefix', function (done) {
+            var stdin = new stream.ReadableStream(
+                "{{#each PEOPLE}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}{{PEOPLE_0}}!" +
+                "{{#each ARR_PEOPLE}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}!"
             );
             fixture({
                 env: {
@@ -103,28 +115,11 @@ describe('envhandlebars', function() {
                 arrayVarPrefix: 'ARR_'
             }, function (err) {
                 assert.ifError(err);
-                assert.equal(stdout.toString(), '!Patrick, Sean, Liam!');
+                assert.equal(stdout.toString(), 'Chris!Patrick, Sean, Liam!');
                 done();
             });
         });
-        it('should render array of strings', function (done) {
-            var stdin = new stream.ReadableStream(
-                "{{#each PEOPLE}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}!"
-            );
-            fixture({
-                env: {
-                    PEOPLE_0: 'Chris',
-                    PEOPLE_1: 'John',
-                    PEOPLE_2: 'Shayne'
-                },
-                stdin: stdin, stdout: stdout, stderr: stderr,
-                argv: argv
-            }, function (err) {
-                assert.ifError(err);
-                assert.equal(stdout.toString(), 'Chris, John, Shayne!');
-                done();
-            });
-        });
+
         it('should render array of objects', function (done) {
             var stdin = new stream.ReadableStream(
                 "{{#each PEOPLE}}{{FIRST}} {{LAST}}{{#unless @last}}, {{/unless}}{{/each}}!"
@@ -135,14 +130,33 @@ describe('envhandlebars', function() {
                     PEOPLE_1_FIRST: 'John',   PEOPLE_1_LAST: 'Papa',
                     PEOPLE_2_FIRST: 'Shayne', PEOPLE_2_LAST: 'Boyer',
                 },
-                stdin: stdin, stdout: stdout, stderr: stderr,
-                argv: argv
+                stdin: stdin, stdout: stdout, stderr: stderr
             }, function (err) {
                 assert.ifError(err);
                 assert.equal(stdout.toString(), 'Chris Martin, John Papa, Shayne Boyer!');
                 done();
             });
         });
+
+        it('should render array of objects with prefix', function (done) {
+            var stdin = new stream.ReadableStream(
+                "{{#each ARR_PEOPLE}}{{FIRST}} {{LAST}}{{#unless @last}}, {{/unless}}{{/each}}!"
+            );
+            fixture({
+                env: {
+                    ARR_PEOPLE_0_FIRST: 'Chris',  ARR_PEOPLE_0_LAST: 'Martin',
+                    ARR_PEOPLE_1_FIRST: 'John',   ARR_PEOPLE_1_LAST: 'Papa',
+                    ARR_PEOPLE_2_FIRST: 'Shayne', ARR_PEOPLE_2_LAST: 'Boyer',
+                },
+                stdin: stdin, stdout: stdout, stderr: stderr,
+                arrayVarPrefix: 'ARR_'
+            }, function (err) {
+                assert.ifError(err);
+                assert.equal(stdout.toString(), 'Chris Martin, John Papa, Shayne Boyer!');
+                done();
+            });
+        });
+
         it('should render array of object arrays', function (done) {
             var stdin = new stream.ReadableStream(
                 "{{#each CLUSTERS}}{{NAME}} > " +
@@ -158,8 +172,31 @@ describe('envhandlebars', function() {
                     CLUSTERS_1_SERVICES_0_NAME: 'c2s1',
                     CLUSTERS_1_SERVICES_1_NAME: 'c2s2'
                 },
+                stdin: stdin, stdout: stdout, stderr: stderr
+            }, function (err) {
+                assert.ifError(err);
+                assert.equal(stdout.toString(), 'c1 > c1s1,c1s2; c2 > c2s1,c2s2!');
+                done();
+            });
+        });
+
+        it('should render array of object arrays with prefix', function (done) {
+            var stdin = new stream.ReadableStream(
+                "{{#each ARR_CLUSTERS}}{{NAME}} > " +
+                    "{{#each SERVICES}}{{NAME}}{{#unless @last}},{{/unless}}{{/each}}" +
+                "{{#unless @last}}; {{/unless}}{{/each}}!"
+            );
+            fixture({
+                env: {
+                    ARR_CLUSTERS_0_NAME: 'c1',
+                    ARR_CLUSTERS_0_SERVICES_0_NAME: 'c1s1',
+                    ARR_CLUSTERS_0_SERVICES_1_NAME: 'c1s2',
+                    ARR_CLUSTERS_1_NAME: 'c2',
+                    ARR_CLUSTERS_1_SERVICES_0_NAME: 'c2s1',
+                    ARR_CLUSTERS_1_SERVICES_1_NAME: 'c2s2'
+                },
                 stdin: stdin, stdout: stdout, stderr: stderr,
-                argv: argv
+                arrayVarPrefix: 'ARR_'
             }, function (err) {
                 assert.ifError(err);
                 assert.equal(stdout.toString(), 'c1 > c1s1,c1s2; c2 > c2s1,c2s2!');
@@ -182,7 +219,6 @@ describe('envhandlebars', function() {
             fixture({
                 env: { FIRST_NAME: 'first', LAST_NAME: 'last' },
                 stdin: stdin, stdout: stdout, stderr: stderr,
-                argv: argv,
                 extendHandlebars: registerHelpers
             }, function (err) {
                 assert.ifError(err);
