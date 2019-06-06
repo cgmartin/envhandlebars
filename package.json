@@ -27,7 +27,7 @@
   "dependencies": {
     "minimist": "^1.2.0",
     "concat-stream": "^2.0.0",
-    "handlebars": "^4.0.12"
+    "handlebars": ">=4.0.14"
   },
   "devDependencies": {
     "eslint": "^5.12.0",
