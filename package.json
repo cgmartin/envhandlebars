@@ -1,6 +1,6 @@
 {
   "name": "envhandlebars",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "description": "Simple handlebars templating for configuration files using environment variables",
   "main": "index.js",
   "scripts": {
@@ -27,10 +27,10 @@
   "dependencies": {
     "minimist": "^1.2.0",
     "concat-stream": "^2.0.0",
-    "handlebars": ">=4.0.14"
+    "handlebars": ">=4.2.0"
   },
   "devDependencies": {
-    "eslint": ">=6.1.0",
+    "eslint": ">=6.3.0",
     "istanbul": "^0.4.5",
     "mocha": ">=6.2.0"
   }
