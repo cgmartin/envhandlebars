@@ -1,6 +1,6 @@
 {
   "name": "envhandlebars",
-  "version": "1.4.4",
+  "version": "1.4.5",
   "description": "Simple handlebars templating for configuration files using environment variables",
   "main": "index.js",
   "scripts": {
