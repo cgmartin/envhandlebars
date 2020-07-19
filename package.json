@@ -25,9 +25,9 @@
     "template"
   ],
   "dependencies": {
-    "minimist": "^1.2.4",
     "concat-stream": "^2.0.0",
-    "handlebars": ">=4.7.3"
+    "handlebars": "^4.7.6",
+    "minimist": "^1.2.4"
   },
   "devDependencies": {
     "eslint": ">=6.8.0",
