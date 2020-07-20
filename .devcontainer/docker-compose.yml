@@ -5,9 +5,12 @@ services:
         build:
             context: .
             dockerfile: dev.Dockerfile
+        environment:
+            - SSH_AUTH_SOCK=${SSH_AUTH_SOCK}
         volumes:
             - ..:/workspace:cached
             - bashhistory:/commandhistory
+            - ${SSH_AUTH_SOCK}:${SSH_AUTH_SOCK}
             - /var/run/docker.sock:/var/run/docker.sock
         command: sleep infinity
 

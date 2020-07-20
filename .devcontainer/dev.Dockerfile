@@ -1,6 +1,6 @@
 FROM buildpack-deps:buster-curl
 
-ARG USERNAME=vscode
+ENV USERNAME=vscode
 ARG USER_UID=1000
 ARG USER_GID=${USER_UID}
 ARG INSTALL_ZSH="false"
@@ -51,3 +51,7 @@ RUN SNIPPET="export PROMPT_COMMAND='history -a' && export HISTFILE=/commandhisto
     && chown -R ${USERNAME} /commandhistory \
     && echo $SNIPPET >> "/home/${USERNAME}/.bashrc" \
     && chown -R ${USERNAME} "/home/${USERNAME}"
+
+ADD docker-init.sh /usr/local/share/
+
+ENTRYPOINT [ "/usr/local/share/docker-init.sh" ]
