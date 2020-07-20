@@ -11,7 +11,7 @@ services:
             - ..:/workspace:cached
             - bashhistory:/commandhistory
             - ${SSH_AUTH_SOCK}:${SSH_AUTH_SOCK}
-            - /var/run/docker.sock:/var/run/docker.sock
+            - /var/run/docker.sock:/var/run/docker-host.sock
         command: sleep infinity
 
 volumes:

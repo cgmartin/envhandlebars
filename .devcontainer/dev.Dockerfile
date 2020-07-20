@@ -22,7 +22,7 @@ RUN apt-get update \
 
 # Install Docker CE CLI
 RUN apt-get update \
-    && apt-get install -y apt-transport-https ca-certificates curl gnupg2 lsb-release 2>&1 \
+    && apt-get install -y apt-transport-https ca-certificates curl gnupg2 lsb-release socat 2>&1 \
     && DISTRO="$(lsb_release -is | tr '[:upper:]' '[:lower:]')" \
     && curl -fsSL https://download.docker.com/linux/${DISTRO}/gpg | apt-key add - 2>/dev/null \
     && echo "deb [arch=amd64] https://download.docker.com/linux/${DISTRO} $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list \
@@ -50,7 +50,9 @@ RUN SNIPPET="export PROMPT_COMMAND='history -a' && export HISTFILE=/commandhisto
     && touch /commandhistory/.bash_history \
     && chown -R ${USERNAME} /commandhistory \
     && echo $SNIPPET >> "/home/${USERNAME}/.bashrc" \
-    && chown -R ${USERNAME} "/home/${USERNAME}"
+    && chown -R ${USERNAME} "/home/${USERNAME}" \
+    && touch /var/run/docker-host.sock \
+    && ln -s /var/run/docker-host.sock /var/run/docker.sock
 
 ADD docker-init.sh /usr/local/share/
 
