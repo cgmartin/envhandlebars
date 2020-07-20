@@ -6,6 +6,9 @@
     "settings": {
         "terminal.integrated.shell.linux": "/bin/bash"
     },
+    "remoteEnv": {
+        "HOST_WORKSPACE_PATH": "${localWorkspaceFolder}"
+    },
     "extensions": [
         "ms-azuretools.vscode-docker"
     ]
